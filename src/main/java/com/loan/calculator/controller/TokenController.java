@@ -13,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 @CrossOrigin
 @RequestMapping("api")
@@ -34,7 +36,10 @@ public class TokenController {
 
         final String token = tokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new TokenResponse(token));
+        Date expiration = tokenUtil.getExpirationDateFromToken(token);
+        int expiry = (int) ((int)expiration.getTime() - new Date().getTime()) / 1000;
+
+        return ResponseEntity.ok(new TokenResponse(expiry,token));
     }
 
 
